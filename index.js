@@ -3,8 +3,10 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const connectDb = require('./config/dbConfig')
 const personRoute = require('./routs/personRoute')
+const dotenv = require('dotenv')
 const app = express()
-const PORT = 3000
+dotenv.config()
+const PORT = process.env.PORT || 5000
 connectDb()
 
 app.use(express.json())

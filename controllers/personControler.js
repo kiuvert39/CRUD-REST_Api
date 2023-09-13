@@ -30,9 +30,9 @@ const getPerson = async (req, res) =>{
    try{ 
         const findPerson = await Personmodule.find({})
         .then(result => res.status(200).json(result))
-        .catch(err => res.json({err:"person note found"}))
+        .catch(error => res.json({err:"person note found",error}))
     }catch{
-       res.status(400).json({error:'name is required'})
+       res.status(400).json({error:'name is required',error})
         
     }
  }
@@ -56,7 +56,7 @@ const getPerson = async (req, res) =>{
    }
 }
 
- const deletePerson = async(req, res) =>{
+const deletePerson = async(req, res) =>{
    try{
       const id = req.params.id
         Personmodule.findByIdAndDelete(id)
@@ -66,7 +66,7 @@ const getPerson = async (req, res) =>{
         res.status(200).json({msg:"person deleted successfully",Personmodule:deletPerson})
       })
       .catch((error) =>{
-         res.status(500).json({msg:"id not valide ",error})
+         res.status(400).json({msg:"id not valide ",error})
       })
      
    }

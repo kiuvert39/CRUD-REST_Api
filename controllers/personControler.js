@@ -15,10 +15,10 @@ const createPerson = async(req, res) =>{
       const person =  Personmodule( req.body)
       await person.save()
       .then(person =>{
-         res.json(person)
+         res.status(200).json(person)
          })
       .catch(error => {
-         res.status(500).json({msg:"an error occured while saving"})
+         res.status(400).json({msg:"an error occured while saving"})
          res.json(error)})
    }
    catch(error){
@@ -29,7 +29,7 @@ const createPerson = async(req, res) =>{
 const getPerson = async (req, res) =>{
    try{ 
         const findPerson = await Personmodule.find({})
-        .then(result => res.json(result))
+        .then(result => res.status(200).json(result))
         .catch(err => res.json({err:"person note found"}))
     }catch{
        res.status(400).json({error:'name is required'})
@@ -44,35 +44,34 @@ const getPerson = async (req, res) =>{
     const updatePerson = req.body
     await Personmodule.findByIdAndUpdate({_id:id},updatePerson)
     .then((updatedPerson) =>{
+      if(!updatedPerson){ return res.status(400).json({msg:"person id not correct "})}
       res.status(200).json({msg:"person updated successfully",Personmodule:updatedPerson})
     })
     .catch((error)=>{
-      console.log(error)
-      res.status(500).json({msg:"unable to update person "})
+      res.status(400).json({msg:"unable to update person ",error})
     })
    }catch(error){
-      console.log(error)
-      res.status(500).json({msg:"unable to update person "})
+      
+      res.status(400).json({msg:"unable to update person ",error})
    }
 }
 
  const deletePerson = async(req, res) =>{
    try{
       const id = req.params.id
-      if(!id){res.status(500).json({msg:"id not available "})}
-      Personmodule.findByIdAndDelete(id)
+        Personmodule.findByIdAndDelete(id)
+    
       .then( (deletPerson) =>{
-         res.status(200).json({msg:"person deleted successfully",Personmodule:deletPerson})
+         if(!deletPerson){ return res.status(400).json({msg:"person id not found"})}
+        res.status(200).json({msg:"person deleted successfully",Personmodule:deletPerson})
       })
       .catch((error) =>{
-         console.log(error)
-         res.status(500).json({msg:"unable to delete person "})
+         res.status(500).json({msg:"id not valide ",error})
       })
-
+     
    }
    catch(error){
-      console.log(error)
-      res.status(500).json({msg:"unable to delete person "})
+      res.status(400).json({msg:"unable to delete person ",error})
    }
 
  }

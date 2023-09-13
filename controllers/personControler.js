@@ -2,7 +2,18 @@ const Personmodule = require('../module/Person')
 const {body , validationResult} = require('express-validator')
 
 const validateInput =[
-    body('name').isAlphanumeric().trim()
+    body('name')
+    .trim() 
+    .notEmpty().withMessage('Name is required') 
+    .matches(/^[a-zA-Z\s]+$/).withMessage('Name should not containe any special characters or numbers'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+    
  ]
 
 const createPerson = async(req, res) =>{
